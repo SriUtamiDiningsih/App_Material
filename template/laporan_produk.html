@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Produk - Toko Material POS</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../static/css/style.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="produk.html" class="brand-wrapper">
+          <div class="brand-icon">
+            <i class="bi bi-box-seam-fill"></i>
+          </div>
+          <div>
+            <div class="brand-title">TOKO MATERIAL</div>
+            <div class="brand-subtitle">Solusi Bangunan Anda</div>
+          </div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="laporan_penjualan.html" class="nav-link-custom">
+          <i class="bi bi-grid-1x2"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="produk.html" class="nav-link-custom">
+          <i class="bi bi-box"></i>
+          <span>Produk</span>
+        </a>
+        <a href="transaksi.html" class="nav-link-custom">
+          <i class="bi bi-receipt"></i>
+          <span>Penjualan</span>
+        </a>
+        <a href="pelanggan.html" class="nav-link-custom">
+          <i class="bi bi-people"></i>
+          <span>Pelanggan</span>
+        </a>
+        <a href="user.html" class="nav-link-custom">
+          <i class="bi bi-person-gear"></i>
+          <span>User</span>
+        </a>
+
+        <!-- Menu Laporan -->
+        <div class="mt-2 pt-2 border-top border-secondary border-opacity-25">
+          <small class="text-uppercase px-3 text-muted fw-bold" style="font-size: 10px; letter-spacing: 0.5px;">Laporan</small>
+        </div>
+        <a href="laporan_penjualan.html" class="nav-link-custom">
+          <i class="bi bi-graph-up"></i>
+          <span>Lap. Penjualan</span>
+        </a>
+        <a href="laporan_produk.html" class="nav-link-custom active">
+          <i class="bi bi-bar-chart"></i>
+          <span>Lap. Produk</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-link-custom">
+          <i class="bi bi-gear"></i>
+          <span>Pengaturan</span>
+        </a>
+        <a href="login.html" class="nav-link-custom text-danger">
+          <i class="bi bi-box-arrow-left"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-title">
+          <h1>Laporan Produk</h1>
+          <p>Laporan data produk dan stok</p>
+        </div>
+
+        <div class="topbar-user dropdown">
+          <div class="d-flex align-items-center gap-3" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="user-meta">
+              <div class="user-name">Admin</div>
+              <div class="user-role">Administrator</div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="user-avatar">
+            <i class="bi bi-chevron-down text-muted small"></i>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><a class="dropdown-item" href="user.html"><i class="bi bi-person me-2"></i>Profil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="login.html"><i class="bi bi-box-arrow-left me-2"></i>Keluar</a></li>
+          </ul>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body">
+        <!-- Filter Header Bar -->
+        <div class="app-card mb-4">
+          <div class="app-card-body p-3">
+            <div class="row g-2 align-items-center">
+              <div class="col-12 col-md-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" value="01/05/2024 - 21/05/2024" readonly>
+                  <span class="input-group-text bg-white"><i class="bi bi-calendar3"></i></span>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <select class="form-select">
+                  <option selected>Semua Kategori</option>
+                  <option value="semen">Semen</option>
+                  <option value="besi">Besi</option>
+                  <option value="bata">Pasir &amp; Bata</option>
+                  <option value="cat">Cat</option>
+                  <option value="pipa">Pipa</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <select class="form-select">
+                  <option selected>Semua Supplier</option>
+                  <option value="1">PT. Sumber Bangunan</option>
+                  <option value="2">CV. Material Jaya</option>
+                  <option value="3">UD. Mitra Konstruksi</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-2 text-md-end">
+                <button class="btn btn-primary w-100">
+                  <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Stat Cards Row -->
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon blue">
+                <i class="bi bi-file-earmark-text"></i>
+              </div>
+              <div>
+                <div class="stat-value">1.289</div>
+                <div class="stat-label">Total Produk</div>
+                <div class="stat-sub">Semua Produk</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon blue" style="background-color: #eff6ff; color: #3b82f6;">
+                <i class="bi bi-person-workspace"></i>
+              </div>
+              <div>
+                <div class="stat-value">8.456</div>
+                <div class="stat-label">Total Stok</div>
+                <div class="stat-sub">Semua Stok</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <i class="bi bi-cash-stack"></i>
+              </div>
+              <div>
+                <div class="stat-value fs-5">Rp 2.456.789.000</div>
+                <div class="stat-label">Nilai Stok</div>
+                <div class="stat-sub">Estimasi nilai stok</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon orange">
+                <i class="bi bi-exclamation-triangle"></i>
+              </div>
+              <div>
+                <div class="stat-value">23</div>
+                <div class="stat-label">Stok Rendah</div>
+                <div class="stat-sub">Produk</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Visual Charts Row -->
+        <div class="row g-4 mb-4">
+          <!-- Top 5 Produk Stok Terbanyak -->
+          <div class="col-12 col-lg-6">
+            <div class="app-card h-100">
+              <div class="app-card-header">
+                <h6 class="app-card-title fw-bold">Top 5 Produk Stok Terbanyak</h6>
+              </div>
+              <div class="app-card-body">
+                <canvas id="chartStokTerbanyak" height="230"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 5 Produk Nilai Stok Tertinggi -->
+          <div class="col-12 col-lg-6">
+            <div class="app-card h-100">
+              <div class="app-card-header">
+                <h6 class="app-card-title fw-bold">Top 5 Produk Nilai Stok Tertinggi</h6>
+              </div>
+              <div class="app-card-body">
+                <canvas id="chartNilaiTertinggi" height="230"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Breakdown Kategori Table Row -->
+        <div class="row g-4">
+          <!-- Kolom Kiri Kategori -->
+          <div class="col-12 col-lg-6">
+            <div class="app-card">
+              <div class="table-responsive">
+                <table class="table-pos">
+                  <thead>
+                    <tr>
+                      <th>Kategori</th>
+                      <th class="text-center">Jumlah Produk</th>
+                      <th class="text-center">Total Stok</th>
+                      <th class="text-end">Nilai Stok</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="fw-semibold">Semen</td>
+                      <td class="text-center">45</td>
+                      <td class="text-center">1.250</td>
+                      <td class="text-end fw-semibold">Rp 875.000.000</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-semibold">Besi</td>
+                      <td class="text-center">120</td>
+                      <td class="text-center">2.100</td>
+                      <td class="text-end fw-semibold">Rp 1.020.000.000</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-semibold">Pasir &amp; Batu</td>
+                      <td class="text-center">25</td>
+                      <td class="text-center">3.000</td>
+                      <td class="text-end fw-semibold">Rp 210.000.000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan Kategori -->
+          <div class="col-12 col-lg-6">
+            <div class="app-card">
+              <div class="table-responsive">
+                <table class="table-pos">
+                  <thead>
+                    <tr>
+                      <th>Kategori</th>
+                      <th class="text-center">Jumlah Produk</th>
+                      <th class="text-center">Total Stok</th>
+                      <th class="text-end">Nilai Stok</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="fw-semibold">Bata</td>
+                      <td class="text-center">30</td>
+                      <td class="text-center">4.800</td>
+                      <td class="text-end fw-semibold">Rp 320.000.000</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-semibold">Cat</td>
+                      <td class="text-center">18</td>
+                      <td class="text-center">230</td>
+                      <td class="text-end fw-semibold">Rp 185.000.000</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-semibold">Pipa</td>
+                      <td class="text-center">28</td>
+                      <td class="text-center">1.100</td>
+                      <td class="text-end fw-semibold">Rp 140.000.000</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Script Inisialisasi Chart.js -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Chart Top 5 Stok Terbanyak (Vertical Bar)
+      const ctxStok = document.getElementById('chartStokTerbanyak').getContext('2d');
+      new Chart(ctxStok, {
+        type: 'bar',
+        data: {
+          labels: ['Bata Merah', 'Pasir Pasang', 'Besi Beton 12mm', 'Semen Tiga Roda', 'Pipa PVC 4 inch'],
+          datasets: [{
+            label: 'Jumlah Stok',
+            data: [4800, 3200, 2900, 2400, 1800],
+            backgroundColor: '#3b82f6',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 5000,
+              grid: { color: '#f1f5f9' },
+              ticks: { stepSize: 1000 }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 10 } }
+            }
+          }
+        }
+      });
+
+      // 2. Chart Top 5 Nilai Stok Tertinggi (Horizontal Bar)
+      const ctxNilai = document.getElementById('chartNilaiTertinggi').getContext('2d');
+      new Chart(ctxNilai, {
+        type: 'bar',
+        data: {
+          labels: ['Besi Beton 12mm', 'Semen Tiga Roda', 'Pasir Pasang', 'Pipa PVC 4 inch', 'Cat Dulux 5kg'],
+          datasets: [{
+            label: 'Nilai Stok (Rp)',
+            data: [850000000, 420000000, 350000000, 260000000, 175000000],
+            backgroundColor: '#10b981',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ' Rp ' + context.raw.toLocaleString('id-ID');
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: { color: '#f1f5f9' },
+              ticks: {
+                callback: function(val) {
+                  return 'Rp ' + (val / 1000000) + ' Jt';
+                },
+                font: { size: 10 }
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { font: { size: 11 } }
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
