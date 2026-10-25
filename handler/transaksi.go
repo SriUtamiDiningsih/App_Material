@@ -2,73 +2,62 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
-
+	"pos_material/models"
 	"pos_material/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 type TransaksiHandler struct {
-	service services.TransaksiService
+	service *services.TransaksiService
 }
 
-func NewTransaksiHandler(service services.TransaksiService) *TransaksiHandler {
+func NewTransaksiHandler(service *services.TransaksiService) *TransaksiHandler {
 	return &TransaksiHandler{service: service}
 }
 
-func (h *TransaksiHandler) Checkout(c *gin.Context) {
-	var req services.CheckoutRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	res, err := h.service.ProcessCheckout(req)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{
-		"message":   "Transaksi berhasil disimpan dan stok otomatis terpotong!",
-		"transaksi": res.Transaksi,
-		"kembalian": res.Kembalian,
-	})
+func (h *TransaksiHandler) RenderLoginPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.html", nil)
 }
 
-func (h *TransaksiHandler) GetAll(c *gin.Context) {
-	list, err := h.service.GetAllTransaksi()
-	if err != nil {
+func (h *TransaksiHandler) RenderTransaksiPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "transaksi.html", nil)
+}
+
+func (h *TransaksiHandler) RenderReportTransaksi(c *gin.Context) {
+	c.HTML(http.StatusOK, "laporan_transaksi.html", nil)
+}
+
+func (h *TransaksiHandler) ApiGetTransaksi(c *gin.Context) {
+	var trans []models.Transaksi
+	if err := h.service.GetAllTransaksis(&trans); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": list})
+	c.JSON(http.StatusOK, trans)
 }
 
-func (h *TransaksiHandler) GetByID(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID transaksi tidak valid"})
+func (h *TransaksiHandler) ApiGetDetailPenjualan(c *gin.Context) {
+	var details []models.DetailTransaksi
+	if err := h.service.GetAllDetails(&details); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	trx, err := h.service.GetTransaksiByID(id)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Transaksi tidak ditemukan"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": trx})
+	c.JSON(http.StatusOK, details)
 }
 
-func (h *TransaksiHandler) GetByNoFaktur(c *gin.Context) {
-	noFaktur := c.Param("no_faktur")
-	trx, err := h.service.GetTransaksiByNoFaktur(noFaktur)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Transaksi tidak ditemukan"})
+func (h *TransaksiHandler) ApiCheckout(c *gin.Context) {
+	var trx models.Transaksi
+	if err := c.ShouldBindJSON(&trx); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"data": trx})
+	if err := h.service.ProcessCheckout(&trx); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Transaksi Sukses! Stok produk berkurang, detail tersimpan, dan struk siap dicetak.",
+		"data":    trx,
+	})
 }

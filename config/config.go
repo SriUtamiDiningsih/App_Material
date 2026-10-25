@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -9,45 +8,32 @@ import (
 )
 
 type Config struct {
-	DBHost     string
-	DBPort     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSSLMode  string
-	DBTimeZone string
-	AppPort    string
-	AppEnv     string
+	AppPort string
+	DBHost  string
+	DBUser  string
+	DBPass  string
+	DBName  string
+	DBPort  string
 }
 
 func LoadConfig() *Config {
-	// Coba load file .env jika ada
-	if err := godotenv.Load(); err != nil {
-		log.Println("Peringatan: Berkas .env tidak ditemukan, menggunakan environment system/default.")
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Peringatan: File .env tidak ditemukan, menggunakan environment system")
 	}
 
 	return &Config{
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnv("DB_PORT", "5433"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", "postgres"),
-		DBName:     getEnv("DB_NAME", "db_material"),
-		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
-		DBTimeZone: getEnv("DB_TIMEZONE", "Asia/Jakarta"),
-		AppPort:    getEnv("APP_PORT", "8080"),
-		AppEnv:     getEnv("APP_ENV", "development"),
+		AppPort: getEnv("APP_PORT", ":8080"),
+		DBHost:  getEnv("DB_HOST", "localhost"),
+		DBUser:  getEnv("DB_USER", "postgres"),
+		DBPass:  getEnv("DB_PASSWORD", "postgres"),
+		DBName:  getEnv("DB_NAME", "db_material"),
+		DBPort:  getEnv("DB_PORT", "5433"),
 	}
 }
 
-func (c *Config) GetDSN() string {
-	return fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		c.DBHost, c.DBUser, c.DBPassword, c.DBName, c.DBPort, c.DBSSLMode, c.DBTimeZone,
-	)
-}
-
 func getEnv(key, fallback string) string {
-	if val := os.Getenv(key); val != "" {
+	if val, exists := os.LookupEnv(key); exists {
 		return val
 	}
 	return fallback
